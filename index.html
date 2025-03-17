@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Multiplication</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-color: black;
+            color: yellow;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .matrix-container {
+            display: grid;
+            grid-template-columns: repeat(4, 50px);
+            gap: 5px;
+            margin: 10px;
+        }
+        input {
+            width: 50px;
+            height: 30px;
+            text-align: center;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Matrix Multiplication</h1>
+    <div class="container">
+        <button onclick="showTwoMatrixForm()">A & B</button>
+        <button onclick="showFourMatrixForm()">DH Matrix (ai)</button>
+
+        <div id="matrixInput" class="matrix-section"></div>
+        <div id="result" class="result"></div>
+    </div>
+    <script>
+        function createMatrix(id, label) {
+            let wrapper = document.createElement('div');
+            let title = document.createElement('h3');
+            title.innerText = label;
+            wrapper.appendChild(title);
+            let container = document.createElement('div');
+            container.className = 'matrix-container';
+            container.id = id;
+            for (let i = 0; i < 16; i++) {
+                let input = document.createElement('input');
+                input.type = 'number';
+                input.value = 0;
+                container.appendChild(input);
+            }
+            wrapper.appendChild(container);
+            return wrapper;
+        }
+
+        function showTwoMatrixForm() {
+            let matrixInput = document.getElementById("matrixInput");
+            matrixInput.innerHTML = '';
+            let matrixA = createMatrix('matrixA', 'Rotzɵ');
+            let matrixB = createMatrix('matrixB', 'Tranzd');
+            let button = document.createElement('button');
+            button.innerText = 'Multiply AB';
+            button.onclick = multiplyTwoMatrices;
+            matrixInput.append(matrixA, matrixB, button);
+        }
+
+        function showFourMatrixForm() {
+            let matrixInput = document.getElementById("matrixInput");
+            matrixInput.innerHTML = '';
+            let matrixA = createMatrix('matrixA', 'Rotzɵ');
+            let matrixB = createMatrix('matrixB', 'Trazd');
+            let matrixC = createMatrix('matrixC', 'Tranxa');
+            let matrixD = createMatrix('matrixD', 'Rotxa');
+            let button = document.createElement('button');
+            button.innerText = 'Multiply ABCD';
+            button.onclick = multiplyFourMatrices;
+            matrixInput.append(matrixA, matrixB, matrixC, matrixD, button);
+        }
+
+        function getMatrixValues(id) {
+            return [...document.getElementById(id).children].map(input => parseInt(input.value));
+        }
+
+        function multiplyMatrices(matrix1, matrix2) {
+            let result = new Array(16).fill(0);
+            for (let i = 0; i < 4; i++) {
+                for (let j = 0; j < 4; j++) {
+                    for (let k = 0; k < 4; k++) {
+                        result[i * 4 + j] += matrix1[i * 4 + k] * matrix2[k * 4 + j];
+                    }
+                }
+            }
+            return result;
+        }
+
+        function displayResult(matrix) {
+            let resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = '<h3>Result:</h3>';
+            let container = document.createElement('div');
+            container.className = 'matrix-container';
+            matrix.forEach(value => {
+                let span = document.createElement('span');
+                span.innerText = value;
+                container.appendChild(span);
+            });
+            resultDiv.appendChild(container);
+        }
+
+        function multiplyTwoMatrices() {
+            let matrixA = getMatrixValues('matrixA');
+            let matrixB = getMatrixValues('matrixB');
+            let result = multiplyMatrices(matrixA, matrixB);
+            displayResult(result);
+        }
+
+        function multiplyFourMatrices() {
+            let matrixA = getMatrixValues('matrixA');
+            let matrixB = getMatrixValues('matrixB');
+            let matrixC = getMatrixValues('matrixC');
+            let matrixD = getMatrixValues('matrixD');
+            let resultAB = multiplyMatrices(matrixA, matrixB);
+            let resultABC = multiplyMatrices(resultAB, matrixC);
+            let resultABCD = multiplyMatrices(resultABC, matrixD);
+            displayResult(resultABCD);
+        }
+    </script>
+</body>
+</html>
